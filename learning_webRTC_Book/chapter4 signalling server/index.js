@@ -110,3 +110,7 @@ wss.on('connection', function (connection) {
 function sendTo(conn, message) {
     conn.send(JSON.stringify(message));
 }
+
+wss.on('listening', function () {
+    console.log("Server started...");
+});
