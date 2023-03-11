@@ -73,7 +73,7 @@ function startConnection() {
     if (hasUserMedia()) {
         navigator.getUserMedia({ video: true, audio: false }, function
             (myStream) {
-                stream = myStream;
+            stream = myStream;
             yourVideo.src = window.URL.createObjectURL(stream);
             if (hasRTCPeerConnection()) {
                 setupPeerConnection(stream);
@@ -124,3 +124,44 @@ function hasRTCPeerConnection() {
         window.webkitRTCIceCandidate || window.mozRTCIceCandidate;
     return !!window.RTCPeerConnection;
 }
+
+callButton.addEventListener("click", function () {
+    var theirUsername = theirUsernameInput.value;
+    if (theirUsername.length > 0) {
+        startPeerConnection(theirUsername);
+    }
+});
+function startPeerConnection(user) {
+    connectedUser = user;
+    // Begin the offer
+    yourConnection.createOffer(function (offer) {
+        send({
+            type: "offer",
+            offer: offer
+        });
+        yourConnection.setLocalDescription(offer);
+    }, function (error) {
+        alert("An error has occurred.");
+    });
+};
+function onOffer(offer, name) {
+    connectedUser = name;
+    yourConnection.setRemoteDescription(new
+        RTCSessionDescription(offer));
+    yourConnection.createAnswer(function (answer) {
+        yourConnection.setLocalDescription(answer);
+        send({
+            type: "answer",
+            answer: answer
+        });
+    }, function (error) {
+        alert("An error has occurred");
+    });
+};
+function onAnswer(answer) {
+    yourConnection.setRemoteDescription(new
+        RTCSessionDescription(answer));
+};
+function onCandidate(candidate) {
+    yourConnection.addIceCandidate(new RTCIceCandidate(candidate));
+};
