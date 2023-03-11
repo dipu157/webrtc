@@ -165,3 +165,18 @@ function onAnswer(answer) {
 function onCandidate(candidate) {
     yourConnection.addIceCandidate(new RTCIceCandidate(candidate));
 };
+
+hangUpButton.addEventListener("click", function () {
+    send({
+        type: "leave"
+    });
+    onLeave();
+});
+function onLeave() {
+    connectedUser = null;
+    theirVideo.src = null;
+    yourConnection.close();
+    yourConnection.onicecandidate = null;
+    yourConnection.onaddstream = null;
+    setupPeerConnection(stream);
+};
