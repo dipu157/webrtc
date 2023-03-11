@@ -1,5 +1,5 @@
 var name, connectedUser;
-var connection = new WebSocket('ws://localhost:8888');
+var connection = new WebSocket('ws://localhost:8888'), name ="";
 connection.onopen = function () {
     console.log("Connected");
 };
